@@ -1,0 +1,30 @@
+{
+  "name": "compare-profiles",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.8.2",
+    "vite": "^3.0.9",
+    "vite-plugin-browser-sync": "^1.0.0",
+    "vite-plugin-print-urls": "^0.1.2",
+    "vite-plugin-solid": "^2.3.0",
+    "vite-tsconfig-paths": "^3.5.0"
+  },
+  "dependencies": {
+    "@hope-ui/solid": "^0.6.7",
+    "@solidjs/router": "^0.4.3",
+    "@stitches/core": "^1.2.8",
+    "solid-js": "^1.5.1",
+    "solid-styled-components": "^0.28.4",
+    "solid-transition-group": "^0.0.11",
+    "solid-zustand": "^1.4.2",
+    "zustand": "^4.1.1"
+  }
+}
