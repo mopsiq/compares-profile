@@ -9,8 +9,11 @@ import {
   S_Profile_InputGroup,
 } from "@app/components/styled/Profile";
 import { Card } from "@app/components/Card/Card";
+import { store } from "@app/data/store/store";
 
 export const Profile: Component = () => {
+  const state = store();
+
   return (
     <>
       <S_Profile>
