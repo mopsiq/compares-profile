@@ -2,9 +2,10 @@ export const parseLink = (link: string) => {
   link = link.replace(/\/$/g, "");
   const regExpAllDigit = /^\d+$/;
   const regExpProfileName = /[^\/]+$/;
-  const isModifiedProfile = !regExpAllDigit.test(link);
-  const modifiedProfile = isModifiedProfile ? "id" : "profiles";
   const profileName = link.match(regExpProfileName) as RegExpMatchArray;
+  const modifiedProfile = !regExpAllDigit.test(profileName[0])
+    ? "id"
+    : "profiles";
 
   return `https://converter.api.dedns.org/https://steamcommunity.com/${modifiedProfile}/${
     profileName[0]
