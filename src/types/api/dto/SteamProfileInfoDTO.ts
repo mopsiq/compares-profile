@@ -1,4 +1,4 @@
-interface SteamProfile {
+export interface SteamProfile {
   avatar: string;
   avatarfull: string;
   avatarhash: string;

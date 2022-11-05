@@ -1,4 +1,4 @@
-export const parseLink = (link: string) => {
+export const parseLink = (link: string): string => {
   link = link.replace(/\/$/g, "");
   const regExpAllDigit = /^\d+$/;
   const regExpProfileName = /[^\/]+$/;

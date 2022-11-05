@@ -16,6 +16,21 @@ const steamIds = {
   steam_url: "",
 };
 
+const profilesData = {
+  avatar: "",
+  avatarfull: "",
+  avatarhash: "",
+  avatarmedium: "",
+  commentpermission: 0,
+  communityvisibilitystate: 0,
+  personaname: "",
+  personastate: 0,
+  personastateflags: 0,
+  profilestate: 0,
+  profileurl: "",
+  steamid: "",
+};
+
 export const store = create<Store>(() => ({
   steamApiKey: import.meta.env.VITE_STEAM_API_KEY || "",
   converterApiKey: import.meta.env.VITE_TEMPORARY_REQUEST_API_KEY || "",
@@ -24,11 +39,17 @@ export const store = create<Store>(() => ({
     ids: {
       ...steamIds,
     },
+    profileData: {
+      ...profilesData,
+    },
   },
   secondProfile: {
     link: "",
     ids: {
       ...steamIds,
+    },
+    profileData: {
+      ...profilesData,
     },
   },
 }));

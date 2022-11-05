@@ -1,6 +1,6 @@
-export const validateField = (value: string) => {
+export const validateField = (value: string): boolean => {
   if (value.length < 6 || value.length === 0) {
-    return true;
+    return false;
   }
-  return false;
+  return true;
 };

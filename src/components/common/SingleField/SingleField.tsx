@@ -2,9 +2,9 @@ import { Input } from "@hope-ui/solid";
 import { Component, createSignal } from "solid-js";
 
 interface SingleFieldProps {
+  validation: (value: string) => boolean;
   innerValue?: string;
   placeholder?: string;
-  validation?: (value: string) => boolean;
   onChange?: (value: string) => void;
 }
 
@@ -16,15 +16,11 @@ export const SingleField: Component<SingleFieldProps> = ({
 }) => {
   const [value, setValue] = createSignal<string>(innerValue || "");
   const [isInvalid, setIsInvalid] = createSignal<boolean>(false);
-  const handleSingleField = (e: any) => {
-    setValue(e.target.value);
-
-    if (validation?.(value())) {
-      setIsInvalid(true);
-    } else {
-      setIsInvalid(false);
-    }
-    onChange?.(value());
+  const handleSingleField = (e: Event) => {
+    const inputValue = (e.target as HTMLInputElement).value;
+    setValue(inputValue);
+    setIsInvalid(!validation?.(inputValue));
+    onChange?.(inputValue);
   };
 
   return (
