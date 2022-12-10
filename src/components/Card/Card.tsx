@@ -18,12 +18,11 @@ export const Card: Component<CardProps> = ({ profileType }) => {
       <S_Card>
         <>
           <S_Title>
+            <Avatar src={parseAvatar(currentProfile)} />
             {currentProfile?.profileData?.mainInfo?.personaname}
           </S_Title>
           <Divider />
-          <S_Block>
-            <Avatar src={parseAvatar(currentProfile)} />
-          </S_Block>
+          <S_Block></S_Block>
         </>
       </S_Card>
     </>

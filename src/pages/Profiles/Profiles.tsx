@@ -18,6 +18,7 @@ import {
   requestProfileIds,
   requestProfileData,
 } from "@app/utils/requestProfileData";
+import { produce } from "solid-js/store";
 
 export const Profiles: Component = () => {
   const { firstProfile, secondProfile } = store();
@@ -39,17 +40,16 @@ export const Profiles: Component = () => {
     return requestProfileIds(links)
       .then((data) => {
         data.forEach((item: ItemConverter) => {
-          store.setState((state) => ({
-            [item?.type]: {
-              ...state[item?.type],
-              ids: {
+          store.setState(
+            produce((state) => {
+              state[item.type].ids = {
                 steam_id: item?.data?.steam_id,
                 steam_id3: item?.data?.steam_id3,
                 steam_id64: item?.data?.steam_id64,
                 steam_url: item?.data?.steam_url,
-              },
-            },
-          }));
+              };
+            }),
+          );
         });
       })
       .then(() => {
@@ -58,32 +58,16 @@ export const Profiles: Component = () => {
       .then((profilesSteamIds) =>
         requestProfileData(profilesSteamIds).then((profiles) => {
           const [firstProfile, secondProfile] = profiles;
-          store.setState((state) => ({
-            firstProfile: {
-              ...state.firstProfile,
-              profileData: {
-                ...state.firstProfile.profileData,
-                mainInfo: {
-                  ...firstProfile.info,
-                },
-                gamesList: {
-                  ...firstProfile.gameList,
-                },
-              },
-            },
-            secondProfile: {
-              ...state.secondProfile,
-              profileData: {
-                ...state.secondProfile.profileData,
-                mainInfo: {
-                  ...secondProfile.info,
-                },
-                gamesList: {
-                  ...secondProfile.gameList,
-                },
-              },
-            },
-          }));
+
+          store.setState(
+            produce((state) => {
+              state.firstProfile.profileData.mainInfo = firstProfile.info;
+              state.firstProfile.profileData.gamesList = firstProfile.gameList;
+              state.secondProfile.profileData.mainInfo = secondProfile.info;
+              state.secondProfile.profileData.gamesList =
+                secondProfile.gameList;
+            }),
+          );
         }),
       );
   };
