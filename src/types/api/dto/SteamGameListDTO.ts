@@ -1,4 +1,4 @@
-interface SteamGames {
+export interface SteamGames {
   appid: number;
   playtime_forever: number;
   playtime_linux_forever: number;
