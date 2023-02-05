@@ -20,7 +20,6 @@ import {
 import { produce } from "solid-js/store";
 
 export const Compare: Component = () => {
-  const { firstProfile, secondProfile } = store();
   const [firstLocalLink, setFirstLocalLink] = createSignal<string>("");
   const [secondLocalLink, setSecondLocalLink] = createSignal<string>("");
 
@@ -28,7 +27,7 @@ export const Compare: Component = () => {
     if (!firstLocalLink().length || !secondLocalLink().length) {
       return false;
     }
-    return [firstLocalLink(), secondLocalLink()].some((item) =>
+    return [firstLocalLink(), secondLocalLink()].every((item) =>
       validateField(item),
     );
   }, [firstLocalLink(), secondLocalLink()]);
