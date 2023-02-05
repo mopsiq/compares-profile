@@ -20,7 +20,7 @@ export const store = create<Store>(() => ({
       steam_url: "",
     },
     profileData: {
-      mainInfo: {
+      info: {
         avatar: "",
         avatarfull: "",
         avatarhash: "",
@@ -34,7 +34,7 @@ export const store = create<Store>(() => ({
         profileurl: "",
         steamid: "",
       },
-      gamesList: {
+      gameList: {
         game_count: 0,
         games: [
           {
@@ -58,7 +58,7 @@ export const store = create<Store>(() => ({
       steam_url: "",
     },
     profileData: {
-      mainInfo: {
+      info: {
         avatar: "",
         avatarfull: "",
         avatarhash: "",
@@ -72,7 +72,7 @@ export const store = create<Store>(() => ({
         profileurl: "",
         steamid: "",
       },
-      gamesList: {
+      gameList: {
         game_count: 0,
         games: [
           {

@@ -1,20 +1,36 @@
-import { ItemConverter } from "@app/types/api/ItemConverter";
 import { SteamService } from "@app/api/Steam/SteamService";
+import { ConverterResponseDTO } from "@app/types/api/dto/ConverterResponseDTO";
 
-const request = async (link: string, type: string): Promise<ItemConverter> => {
-  return fetch(link)
+interface Link {
+  url?: string;
+  steamid?: string;
+}
+interface Request {
+  link: Link;
+  type: string;
+}
+
+const request = async ({
+  link,
+  type,
+}: Request): Promise<ConverterResponseDTO> => {
+  if (link?.steamid) {
+    return Promise.resolve({ steamid: link.steamid, type });
+  }
+
+  return fetch(link.url as string)
     .then((value) => value.json())
     .then((data) => {
-      return { ...data, type };
+      return { steamid: data.response.steamid, type };
     });
 };
 
-export const requestProfileIds = async (profiles: string[]) => {
+export const requestProfileIds = async (profiles: Link[]) => {
   const [firstProfile, secondProfile] = profiles;
 
   return Promise.all([
-    request(firstProfile, "firstProfile"),
-    request(secondProfile, "secondProfile"),
+    request({ link: firstProfile, type: "firstProfile" }),
+    request({ link: secondProfile, type: "secondProfile" }),
   ]);
 };
 

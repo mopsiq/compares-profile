@@ -6,8 +6,8 @@ export interface SteamDataStore {
   link: string;
   ids: SteamIdsProfile;
   profileData: {
-    mainInfo: SteamProfile;
-    gamesList: {
+    info: SteamProfile;
+    gameList: {
       game_count: number;
       games: SteamGames[];
     };

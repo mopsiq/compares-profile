@@ -1,13 +1,20 @@
-export const parseLink = (link: string): string => {
+export const parseLink = (
+  link: string,
+): { url: string } | { steamid: string } => {
   link = link.replace(/\/$/g, "");
   const regExpAllDigit = /^\d+$/;
   const regExpProfileName = /[^\/]+$/;
   const profileName = link.match(regExpProfileName) as RegExpMatchArray;
-  const modifiedProfile = !regExpAllDigit.test(profileName[0])
-    ? "id"
-    : "profiles";
 
-  return `https://converter.api.dedns.org/https://steamcommunity.com/${modifiedProfile}/${
-    profileName[0]
-  }/?api-key=${import.meta.env.VITE_TEMPORARY_REQUEST_API_KEY}`;
+  if (!regExpAllDigit.test(profileName[0])) {
+    return {
+      url: `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${
+        import.meta.env.VITE_STEAM_API_KEY
+      }&format=json&vanityurl=${profileName[0]}`,
+    };
+  } else {
+    return {
+      steamid: profileName[0],
+    };
+  }
 };

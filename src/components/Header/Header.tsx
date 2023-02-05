@@ -26,7 +26,7 @@ export const Header: Component = () => {
           <S_Link onClick={() => navigateTo("/")}>Home</S_Link>
         </S_Item>
         <S_Item>
-          <S_Link onClick={() => navigateTo("/profile")}>Profile</S_Link>
+          <S_Link onClick={() => navigateTo("/compare")}>Compare</S_Link>
         </S_Item>
       </S_Group>
     </S_Header>

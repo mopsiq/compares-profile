@@ -16,6 +16,7 @@ export const SingleField: Component<SingleFieldProps> = ({
 }) => {
   const [value, setValue] = createSignal<string>(innerValue || "");
   const [isInvalid, setIsInvalid] = createSignal<boolean>(false);
+
   const handleSingleField = (e: Event) => {
     const inputValue = (e.target as HTMLInputElement).value;
     setValue(inputValue);
@@ -29,6 +30,8 @@ export const SingleField: Component<SingleFieldProps> = ({
       invalid={isInvalid()}
       placeholder={placeholder}
       value={value()}
+      color="$accent1"
+      size="lg"
     />
   );
 };
