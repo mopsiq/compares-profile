@@ -1,0 +1,6 @@
+{
+  "watch": [],
+  "execMap": {
+      "ts": "ts-node"
+  }
+}
