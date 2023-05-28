@@ -5,20 +5,20 @@ import { S_Screen } from "@app/components/styled/Compare";
 import { store } from "@app/data/store/store";
 
 export const Profiles: Component = () => {
-  const profilesStore = store();
+  const { firstProfile, secondProfile } = store()
 
   return (
     <>
       <ProfileBlock title="Profiles comprasion">
         <S_Screen>
           <Info
-            avatar={profilesStore["firstProfile"].profileData.info.avatarfull}
+            avatar={firstProfile.profileData.info.avatarfull}
             position="left"
           />
         </S_Screen>
         <S_Screen>
           <Info
-            avatar={profilesStore["secondProfile"].profileData.info.avatarfull}
+            avatar={secondProfile.profileData.info.avatarfull}
             position="right"
           />
         </S_Screen>
