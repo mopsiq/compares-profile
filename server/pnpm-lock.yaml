@@ -6,7 +6,10 @@ specifiers:
   '@fastify/routes': ^5.1.0
   '@tsconfig/node16': ^1.0.3
   '@tsconfig/recommended': ^1.0.2
+  '@types/bluebird': ^3.5.38
   '@types/node': ^18.14.1
+  bluebird: ^3.7.2
+  dotenv: ^16.0.3
   fastify: ^4.13.0
   fastify-http-client: ^1.0.0
   nodemon: ^2.0.20
@@ -18,12 +21,15 @@ dependencies:
   '@fastify/cors': 8.2.0
   '@fastify/http-proxy': 8.4.0
   '@fastify/routes': 5.1.0
+  bluebird: 3.7.2
+  dotenv: 16.0.3
   fastify: 4.13.0
   fastify-http-client: 1.0.0
 
 devDependencies:
   '@tsconfig/node16': 1.0.3
   '@tsconfig/recommended': 1.0.2
+  '@types/bluebird': 3.5.38
   '@types/node': 18.14.1
   nodemon: 2.0.20
   pino-pretty: 9.4.0
@@ -137,6 +143,10 @@ packages:
     resolution: {integrity: sha512-dbHBtbWBOjq0/otpopAE02NT2Cm05Qe2JsEKeCf/wjSYbI2hz8nCqnpnOJWHATgjDz4fd3dchs3Wy1gQGjfN6w==}
     dev: true
 
+  /@types/bluebird/3.5.38:
+    resolution: {integrity: sha512-yR/Kxc0dd4FfwtEoLZMoqJbM/VE/W7hXn/MIjb+axcwag0iFmSPK7OBUZq1YWLynJUoWQkfUrI7T0HDqGApNSg==}
+    dev: true
+
   /@types/node/18.14.1:
     resolution: {integrity: sha512-QH+37Qds3E0eDlReeboBxfHbX9omAcBCXEzswCu6jySP642jiM3cYSIkU/REqwhCUqXdonHFuBfJDiAJxMNhaQ==}
     dev: true
@@ -243,6 +253,10 @@ packages:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
     dev: true
+
+  /bluebird/3.7.2:
+    resolution: {integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==}
+    dev: false
 
   /brace-expansion/1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
@@ -419,6 +433,11 @@ packages:
     engines: {node: '>= 8.0.0'}
     dependencies:
       utility: 1.17.0
+    dev: false
+
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
     dev: false
 
   /ee-first/1.1.1:

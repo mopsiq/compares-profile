@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.ts",
+    "start": ". ~/.nvm/nvm.sh; nvm use; nodemon app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,12 +14,15 @@
     "@fastify/cors": "^8.2.0",
     "@fastify/http-proxy": "^8.4.0",
     "@fastify/routes": "^5.1.0",
+    "bluebird": "^3.7.2",
+    "dotenv": "^16.0.3",
     "fastify": "^4.13.0",
     "fastify-http-client": "^1.0.0"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
     "@tsconfig/recommended": "^1.0.2",
+    "@types/bluebird": "^3.5.38",
     "@types/node": "^18.14.1",
     "nodemon": "^2.0.20",
     "pino-pretty": "^9.4.0",
