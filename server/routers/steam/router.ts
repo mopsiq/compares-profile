@@ -23,63 +23,44 @@ export const steamRouter = (
   app.get("/playerAchievementsApp:?key&steamid", async (req, res) => {
     const { key, steamid } = req.query;
 
-    return Promise.all([
-      httpsRequest({
-        ...defaultHttpsOptions,
-        path: `/IPlayerService/GetOwnedGames/v0001/?key=${key}&steamid=${steamid}&format=json`,
-      }),
-    ])
-      .spread(async (ownedGamesStream) => {
-        const ownedGames: SteamRecentlyGamesDTO = await streamToString(
-          ownedGamesStream,
-        );
-
-        return ownedGames;
-      })
+    return httpsRequest({
+      ...defaultHttpsOptions,
+      path: `/IPlayerService/GetOwnedGames/v0001/?key=${key}&steamid=${steamid}&format=json`,
+    })
+      .then((ownedGames) => streamToString(ownedGames))
       .then((ownedGames) => {
-        const appIds = ownedGames.response.games.map((i) => i.appid);
+        const ownedParseGames = JSON.parse(ownedGames);
+        const appIds = ownedParseGames.response.games.map((i) => i.appid);
 
         return Promise.map(appIds, async (appId) => {
-          // TODO: Check needs request in /GetGlobalAchievementPercentagesForApp
-          // return httpsRequest({
-          //   ...defaultHttpsOptions,
-          //   path: `/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${appId}&format=json`,
-          // }).then(async (achievementsByAppStream) => {
-          //   const achievementsByApp = await streamToString(
-          //     achievementsByAppStream,
-          //   );
-          // });
+          return Promise.all([
+            httpsRequest({
+              ...defaultHttpsOptions,
+              path: `/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${appId}&format=json`,
+            }),
+            httpsRequest({
+              ...defaultHttpsOptions,
+              path: `/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${appId}&key=3F58E57C4B88ADCBCFCD824EFC80FCFB&steamid=${steamid}`,
+            }),
+          ]).then(async ([globalAchievementsStream, userStatsStream]) => {
+            const globalAchievementsParse = await streamToString(
+              globalAchievementsStream,
+            );
+            const globalAchievements = JSON.parse(globalAchievementsParse);
+
+            const userStatsParse = await streamToString(userStatsStream);
+            const userStats = JSON.parse(userStatsParse);
+
+            // TODO: Add necessary properties and remove unnecessary
+
+            return {
+              globalAchievements,
+              userStats,
+            };
+          });
         });
       });
   });
-
-  // app.get("/playerAchievementsApp:?appid&key&steamid", async (req, res) => {
-  //   const { appid, key, steamid } = req.query;
-
-  //   const list = await httpsRequest(
-  //     {
-  //       ...defaultHttpsOptions,
-  //       path: `/IPlayerService/GetOwnedGames/v0001/?key=${key}&steamid=${steamid}&format=json`,
-  //     },
-  //     async (ownedGames) => await streamToString(ownedGames),
-  //   );
-
-  //   res.send(list);
-  // });
-
-  // app.get("/globalAchievementsApp:?gameid", async (req, res) => {
-  //   const { gameId } = req.query;
-
-  //   const achievements = await httpsRequest(
-  //     {
-  //       ...defaultHttpsOptions,
-  //       path: `/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${gameId}&format=json`,
-  //     },
-  //     async (globalAchievements) => await streamToString(globalAchievements),
-  //   );
-
-  //   res.send(achievements);
-  // });
 
   done();
 };
