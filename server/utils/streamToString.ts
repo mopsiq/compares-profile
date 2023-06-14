@@ -1,7 +1,7 @@
 import { Stream } from "stream";
 
-export const streamToString = async <T>(stream: Stream): Promise<T> => {
-  const chunks = [];
+export const streamToString = async (stream: Stream): Promise<string> => {
+  const chunks: Uint8Array[] = [];
   return new Promise((resolve, reject) => {
     stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
     stream.on("error", (err) => reject(err));

@@ -12,7 +12,7 @@ interface HttpsOptions {
 export const httpsRequest = (
   options: HttpsOptions,
   callback?: (value: Stream) => Promise<Stream>,
-) => {
+): Promise<Stream> => {
   return new Promise((resolve, reject) => {
     return https
       .request(options)
