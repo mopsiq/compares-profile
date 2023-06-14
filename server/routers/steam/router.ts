@@ -1,11 +1,10 @@
 import { FastifyError, FastifyInstance, FastifyPluginOptions } from "fastify";
 import fs from "fs";
 import dotenv from "dotenv";
-import { SteamGlobalAchievementsDTO } from "../../../src/types/api/dto/SteamGlobalAchievementsDTO";
+import { Promise } from "bluebird";
 import { SteamRecentlyGamesDTO } from "../../../src/types/api/dto/SteamRecentlyGamesDTO";
 import { httpsRequest } from "../../utils/httpsRequest";
 import { streamToString } from "../../utils/streamToString";
-import { Promise } from "bluebird";
 dotenv.config();
 
 const defaultHttpsOptions = {
@@ -29,7 +28,7 @@ export const steamRouter = (
     })
       .then((ownedGames) => streamToString(ownedGames))
       .then((ownedGames) => {
-        const ownedParseGames = JSON.parse(ownedGames);
+        const ownedParseGames = JSON.parse(ownedGames) as SteamRecentlyGamesDTO;
         const appIds = ownedParseGames.response.games.map((i) => i.appid);
 
         return Promise.map(appIds, async (appId) => {
@@ -51,13 +50,28 @@ export const steamRouter = (
             const userStatsParse = await streamToString(userStatsStream);
             const userStats = JSON.parse(userStatsParse);
 
-            // TODO: Add necessary properties and remove unnecessary
-
             return {
               globalAchievements,
               userStats,
             };
           });
+        }).then((stats) => {
+          return stats.map((s) => ({
+            globalAchievements: {
+              achievements:
+                s.globalAchievements.achievementpercentages?.achievements || [],
+              achievementsCount:
+                s.globalAchievements.achievementpercentages?.achievements
+                  .length || 0,
+            },
+            userStats: {
+              playerStats: {
+                ...s.userStats.playerstats,
+                completedAchievements:
+                  s.userStats.playerstats?.achievements?.length || 0,
+              },
+            },
+          }));
         });
       });
   });
