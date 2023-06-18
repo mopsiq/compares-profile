@@ -1,10 +1,10 @@
 import { FastifyError, FastifyInstance, FastifyPluginOptions } from "fastify";
 import fs from "fs";
 import dotenv from "dotenv";
-import { Promise } from "bluebird";
-import { SteamRecentlyGamesDTO } from "../../../src/types/api/dto/SteamRecentlyGamesDTO";
-import { httpsRequest } from "../../utils/httpsRequest";
-import { streamToString } from "../../utils/streamToString";
+import Promise from "bluebird";
+import { SteamRecentlyGamesDTO } from "../../../src/types/api/dto/SteamRecentlyGamesDTO.js";
+import { httpsRequest } from "../../utils/httpsRequest.js";
+import { streamToString } from "../../utils/streamToString.js";
 dotenv.config();
 
 const defaultHttpsOptions = {
@@ -74,6 +74,16 @@ export const steamRouter = (
           }));
         });
       });
+  });
+
+  app.get("/getInventory:?key&steamid&appid", async (req, res) => {
+    const { key, steamid, appid } = req.query;
+
+    return httpsRequest({
+      ...defaultHttpsOptions,
+      host: "steamcommunity.com",
+      path: `/inventory/${steamid}/${appid}/2?l=english&count=5000&format=json`,
+    }).then((v) => streamToString(v));
   });
 
   done();

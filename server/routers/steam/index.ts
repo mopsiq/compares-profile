@@ -1,2 +1,2 @@
-export * from "./proxy";
-export * from "./router";
+export * from "./proxy.js";
+export * from "./router.js";
