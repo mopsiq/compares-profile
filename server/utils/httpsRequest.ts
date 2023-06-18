@@ -1,5 +1,5 @@
 import https from "https";
-import { Stream } from "stream";
+import { Readable } from "stream";
 
 interface HttpsOptions {
   key: string;
@@ -11,8 +11,8 @@ interface HttpsOptions {
 
 export const httpsRequest = (
   options: HttpsOptions,
-  callback?: (value: Stream) => Promise<Stream>,
-): Promise<Stream> => {
+  callback?: (value: Readable) => Promise<Readable>,
+): Promise<Readable> => {
   return new Promise((resolve, reject) => {
     return https
       .request(options)
