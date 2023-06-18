@@ -2,7 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "exports": "./index.js",
+  "type": "module",
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "start": ". ~/.nvm/nvm.sh; nvm use; nodemon app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,7 +21,8 @@
     "bluebird": "^3.7.2",
     "dotenv": "^16.0.3",
     "fastify": "^4.13.0",
-    "fastify-http-client": "^1.0.0"
+    "fastify-http-client": "^1.0.0",
+    "file-type": "^18.5.0"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",

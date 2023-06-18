@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
 import routes from "@fastify/routes";
-import { steamRouter, steamProxy } from "./routers/steam/index";
+import { steamRouter, steamProxy } from "./routers/steam/index.js";
 
 const server = fastify({
   logger: {
