@@ -8,6 +8,11 @@ import { streamToString } from "../../utils/streamToString.js";
 import { SteamUserInventoryDTO } from "../../types/SteamUserInventoryDTO.js";
 dotenv.config();
 
+const steamAPIKey = fs.readFileSync(
+  process.env.STEAM_API_USER_KEY as string,
+  "utf-8",
+);
+
 const defaultHttpsOptions = {
   key: fs.readFileSync(process.env.PEM_KEY as string, "utf-8"),
   cert: fs.readFileSync(process.env.CRT_KEY as string, "utf-8"),
@@ -40,7 +45,7 @@ export const steamRouter = (
             }),
             httpsRequest({
               ...defaultHttpsOptions,
-              path: `/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${appId}&key=3F58E57C4B88ADCBCFCD824EFC80FCFB&steamid=${steamid}`,
+              path: `/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${appId}&key=${steamAPIKey}&steamid=${steamid}`,
             }),
           ]).then(async ([globalAchievementsStream, userStatsStream]) => {
             const globalAchievementsParse = await streamToString(
