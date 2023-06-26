@@ -6,12 +6,11 @@ import { SteamRecentlyGamesDTO } from "../../../src/types/api/dto/SteamRecentlyG
 import { httpsRequest } from "../../utils/httpsRequest.js";
 import { streamToString } from "../../utils/streamToString.js";
 import { SteamUserInventoryDTO } from "../../types/SteamUserInventoryDTO.js";
+import { HttpsProxyAgent } from "https-proxy-agent";
 dotenv.config();
 
-const steamAPIKey = fs.readFileSync(
-  process.env.STEAM_API_USER_KEY as string,
-  "utf-8",
-);
+const steamAPIKey = process.env.STEAM_API_USER_KEY || "";
+const proxyServer = process.env.PROXY_SERVER || "";
 
 const defaultHttpsOptions = {
   key: fs.readFileSync(process.env.PEM_KEY as string, "utf-8"),
@@ -89,6 +88,7 @@ export const steamRouter = (
       ...defaultHttpsOptions,
       host: "steamcommunity.com",
       path: `/inventory/${steamid}/${appid}/2?l=english&count=5000&format=json`,
+      agent: new HttpsProxyAgent(proxyServer),
     })
       .then((v) => streamToString(v))
       .then((inventory) => {
