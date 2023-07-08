@@ -3,12 +3,7 @@ import { PlayerService } from "../services/steam/Player.js";
 import { InventoryService } from "../services/steam/Inventory.js";
 import { BadgesService } from "../services/steam/Badges.js";
 
-interface ISteamController {
-  req: FastifyRequest;
-  res: FastifyReply;
-}
-
-export class SteamController implements ISteamController {
+export class SteamController {
   req;
   res;
 
