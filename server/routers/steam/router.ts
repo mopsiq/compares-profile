@@ -1,22 +1,5 @@
 import { FastifyError, FastifyInstance, FastifyPluginOptions } from "fastify";
-import fs from "fs";
-import dotenv from "dotenv";
-import Promise from "bluebird";
-import { SteamRecentlyGamesDTO } from "../../../src/types/api/dto/SteamRecentlyGamesDTO.js";
-import { httpsRequest } from "../../utils/httpsRequest.js";
-import { SteamUserInventoryDTO } from "../../types/SteamUserInventoryDTO.js";
-import { HttpsProxyAgent } from "https-proxy-agent";
-dotenv.config();
-
-const steamAPIKey = process.env.STEAM_API_USER_KEY || "";
-const proxyServer = process.env.PROXY_SERVER || "";
-
-const defaultHttpsOptions = {
-  key: fs.readFileSync(process.env.PEM_KEY as string, "utf-8"),
-  cert: fs.readFileSync(process.env.CRT_KEY as string, "utf-8"),
-  host: "api.steampowered.com",
-  method: "GET",
-};
+import { SteamController } from "../../controllers/steamController.js";
 
 export const steamRouter = (
   app: FastifyInstance,
@@ -24,69 +7,19 @@ export const steamRouter = (
   done: (err?: FastifyError) => void,
 ) => {
   app.get("/playerAchievementsApp:?key&steamid", async (req, res) => {
-    const { key, steamid } = req.query;
-
-    return httpsRequest({
-      ...defaultHttpsOptions,
-      path: `/IPlayerService/GetOwnedGames/v0001/?key=${key}&steamid=${steamid}&format=json`,
-    }).then((ownedGames) => {
-      const ownedParseGames = JSON.parse(ownedGames) as SteamRecentlyGamesDTO;
-      const appIds = ownedParseGames.response.games.map((i) => i.appid);
-
-      return Promise.map(appIds, async (appId) => {
-        return Promise.all([
-          httpsRequest({
-            ...defaultHttpsOptions,
-            path: `/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${appId}&format=json`,
-          }),
-          httpsRequest({
-            ...defaultHttpsOptions,
-            path: `/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${appId}&key=${steamAPIKey}&steamid=${steamid}`,
-          }),
-        ]).then(async ([globalAchievements, userStats]) => {
-          return {
-            globalAchievements: JSON.parse(globalAchievements),
-            userStats: JSON.parse(userStats),
-          };
-        });
-      }).then((stats) => {
-        return stats.map((s) => ({
-          globalAchievements: {
-            achievements:
-              s.globalAchievements.achievementpercentages?.achievements || [],
-            achievementsCount:
-              s.globalAchievements.achievementpercentages?.achievements
-                .length || 0,
-          },
-          userStats: {
-            playerStats: {
-              ...s.userStats.playerstats,
-              completedAchievements:
-                s.userStats.playerstats?.achievements?.length || 0,
-            },
-          },
-        }));
-      });
-    });
+    return new SteamController(req, res).playerAchievements();
   });
 
   app.get("/getInventory:?steamid&appid", async (req, res) => {
-    const { steamid, appid } = req.query;
+    return new SteamController(req, res).getInventory();
+  });
 
-    return httpsRequest({
-      ...defaultHttpsOptions,
-      host: "steamcommunity.com",
-      path: `/inventory/${steamid}/${appid}/2?l=english&count=5000&format=json`,
-      agent: new HttpsProxyAgent(proxyServer),
-    }).then((inventory) => {
-      if (!inventory) {
-        return inventory;
-      }
+  app.get("/getBadges:?steamid", async (req, res) => {
+    return new SteamController(req, res).getBadgesStats();
+  });
 
-      const inventoryParse: SteamUserInventoryDTO = JSON.parse(inventory);
-
-      return inventoryParse;
-    });
+  app.get("/getBadgesProgress:?steamid&badgeId", async (req, res) => {
+    return new SteamController(req, res).getBadgesProgress();
   });
 
   done();

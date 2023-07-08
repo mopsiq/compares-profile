@@ -1,11 +1,43 @@
-export const playerSummaries = (req, res) => {};
+import { FastifyReply, FastifyRequest } from "fastify";
+import { PlayerService } from "../services/steam/Player.js";
+import { InventoryService } from "../services/steam/Inventory.js";
+import { BadgesService } from "../services/steam/Badges.js";
 
-export const friendList = (req, res) => {};
+interface ISteamController {
+  req: FastifyRequest;
+  res: FastifyReply;
+}
 
-export const ownedGames = (req, res) => {};
+export class SteamController implements ISteamController {
+  req;
+  res;
 
-export const recentlyGames = (req, res) => {};
+  constructor(req: FastifyRequest, res: FastifyReply) {
+    this.req = req;
+    this.res = res;
+  }
 
-export const playerAchievements = (req, res) => {};
+  playerAchievements() {
+    const Player = new PlayerService();
 
-export const globalAchievements = (req, res) => {};
+    return Player.achievements(this.req, this.res);
+  }
+
+  getInventory = () => {
+    const Inventory = new InventoryService();
+
+    return Inventory.stats(this.req, this.res);
+  };
+
+  getBadgesStats = () => {
+    const Badges = new BadgesService();
+
+    return Badges.stats(this.req, this.res);
+  };
+
+  getBadgesProgress = () => {
+    const Badges = new BadgesService();
+
+    return Badges.progress(this.req, this.res);
+  };
+}

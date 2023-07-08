@@ -27,10 +27,5 @@ export const steamProxy = (
     prefix: "/api/steam/recentlyGames",
   });
 
-  app.register(proxy, {
-    upstream: "https://api.steampowered.com/IPlayerService/GetBadges/v1/",
-    prefix: "/api/steam/badges",
-  });
-
   done();
 };
