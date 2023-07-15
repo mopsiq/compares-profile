@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
 import routes from "@fastify/routes";
-import { steamRouter, steamProxy } from "./routers/steam/index.js";
+import { steamRouter } from "./routers/steam/router.js";
 
 const server = fastify({
   logger: {
@@ -13,8 +13,7 @@ const server = fastify({
 })
   .register(cors)
   .register(routes)
-  .register(steamRouter, { prefix: "api/steam" })
-  .register(steamProxy);
+  .register(steamRouter, { prefix: "api/steam" });
 
 server.listen({ port: 8080 }, (err, address) => {
   if (err) {

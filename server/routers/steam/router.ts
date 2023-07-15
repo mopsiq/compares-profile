@@ -10,6 +10,18 @@ export const steamRouter = (
     return new SteamController(req, res).playerAchievements();
   });
 
+  app.get("/playerSummaries:?steamid", async (req, res) => {
+    return new SteamController(req, res).playerSummaries();
+  });
+
+  app.get("/ownedGames:?steamid", async (req, res) => {
+    return new SteamController(req, res).ownedGames();
+  });
+
+  app.get("/recentlyGames:?steamid", async (req, res) => {
+    return new SteamController(req, res).recentlyGames();
+  });
+
   app.get("/getInventory:?steamid&appid", async (req, res) => {
     return new SteamController(req, res).getInventory();
   });
@@ -20,6 +32,18 @@ export const steamRouter = (
 
   app.get("/getBadgesProgress:?steamid&badgeId", async (req, res) => {
     return new SteamController(req, res).getBadgesProgress();
+  });
+
+  app.get("/friendsList:?steamid", async (req, res) => {
+    return new SteamController(req, res).friendsList();
+  });
+
+  app.get("/resolveVanityUrl:?link", async (req, res) => {
+    return new SteamController(req, res).resolveVanityUrl();
+  });
+
+  app.get("/bans:?steamid", async (req, res) => {
+    return new SteamController(req, res).bans();
   });
 
   done();
