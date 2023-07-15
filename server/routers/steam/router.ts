@@ -6,7 +6,7 @@ export const steamRouter = (
   opt: FastifyPluginOptions,
   done: (err?: FastifyError) => void,
 ) => {
-  app.get("/playerAchievementsApp:?key&steamid", async (req, res) => {
+  app.get("/playerAchievementsApp:?steamid", async (req, res) => {
     return new SteamController(req, res).playerAchievements();
   });
 

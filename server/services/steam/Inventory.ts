@@ -1,4 +1,3 @@
-import { FastifyReply, FastifyRequest } from "fastify";
 import Promise from "bluebird";
 import { SteamUserInventoryDTO } from "../../types/SteamUserInventoryDTO.js";
 import { httpsRequest } from "../../utils/httpsRequest.js";
@@ -8,15 +7,17 @@ import { steamRequestSettings } from "../../routers/steam/request-settings.js";
 import { removeCurrencyUnit } from "../../utils/removeCurrencyUnit.js";
 
 export class InventoryService {
-  constructor() {}
+  private steamid;
 
-  async stats(req: FastifyRequest, res: FastifyReply) {
-    const { steamid, appid } = req.query;
+  constructor(steamid: string) {
+    this.steamid = steamid;
+  }
 
+  async stats(appid: number) {
     return httpsRequest({
       ...steamRequestSettings,
       host: "steamcommunity.com",
-      path: `/inventory/${steamid}/${appid}/2?l=english&count=5000&format=json`,
+      path: `/inventory/${this.steamid}/${appid}/2?l=english&count=5000&format=json`,
       agent: new HttpsProxyAgent(PROXY_SERVER),
     }).then((inventory) => {
       if (!inventory) {
@@ -45,7 +46,7 @@ export class InventoryService {
         return httpsRequest({
           ...steamRequestSettings,
           host: "steamcommunity.com",
-          path: `/market/priceoverview/?appid=${730}&currency=0&market_hash_name=${encodeURI(
+          path: `/market/priceoverview/?appid=${appid}&currency=0&market_hash_name=${encodeURI(
             item.market_hash_name,
           )}`,
           agent: new HttpsProxyAgent(PROXY_SERVER),

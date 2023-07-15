@@ -1,4 +1,3 @@
-import { FastifyReply, FastifyRequest } from "fastify";
 import { httpsRequest } from "../../utils/httpsRequest.js";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { PROXY_SERVER } from "../../constants/PROXY_SERVER.js";
@@ -9,14 +8,16 @@ const getQuestStatus = (quests, status: "c" | "u") =>
   quests.filter((q) => (status === "c" ? q.completed : !q.completed));
 
 export class BadgesService {
-  constructor() {}
+  private steamid;
 
-  async stats(req: FastifyRequest, res: FastifyReply) {
-    const { steamid } = req.query;
+  constructor(steamid: string) {
+    this.steamid = steamid;
+  }
 
+  async stats() {
     return httpsRequest({
       ...steamRequestSettings,
-      path: `/IPlayerService/GetBadges/v1/?key=${STEAM_API_USER_KEY}&steamid=${steamid}`,
+      path: `/IPlayerService/GetBadges/v1/?key=${STEAM_API_USER_KEY}&steamid=${this.steamid}`,
       agent: new HttpsProxyAgent(PROXY_SERVER),
     }).then((badgesResponse) => {
       const response = badgesResponse.response;
@@ -28,12 +29,10 @@ export class BadgesService {
     });
   }
 
-  async progress(req: FastifyRequest, res: FastifyReply) {
-    const { steamid, badgeId } = req.query;
-
+  async progress(badgeId: string) {
     return httpsRequest({
       ...steamRequestSettings,
-      path: `/IPlayerService/GetCommunityBadgeProgress/v1/?key=${STEAM_API_USER_KEY}&steamid=${steamid}&badgeid=${badgeId}`,
+      path: `/IPlayerService/GetCommunityBadgeProgress/v1/?key=${STEAM_API_USER_KEY}&steamid=${this.steamid}&badgeid=${badgeId}`,
       agent: new HttpsProxyAgent(PROXY_SERVER),
     }).then((badgesProgressResponse) => {
       const response = badgesProgressResponse.response;

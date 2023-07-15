@@ -1,4 +1,3 @@
-import { FastifyReply, FastifyRequest } from "fastify";
 import Promise from "bluebird";
 import { SteamRecentlyGamesDTO } from "../../../src/types/api/dto/SteamRecentlyGamesDTO.js";
 import { httpsRequest } from "../../utils/httpsRequest.js";
@@ -8,15 +7,17 @@ import { PROXY_SERVER } from "../../constants/PROXY_SERVER.js";
 import { steamRequestSettings } from "../../routers/steam/request-settings.js";
 
 export class PlayerService {
-  constructor() {}
+  steamid: string;
 
-  async achievements(req: FastifyRequest, res: FastifyReply) {
-    const { key, steamid } = req.query;
+  constructor(steamid: string) {
+    this.steamid = steamid;
+  }
 
+  async achievements() {
     return httpsRequest({
       ...steamRequestSettings,
       method: "GET",
-      path: `/IPlayerService/GetOwnedGames/v0001/?key=${key}&steamid=${steamid}&format=json`,
+      path: `/IPlayerService/GetOwnedGames/v0001/?key=${STEAM_API_USER_KEY}&steamid=${this.steamid}&format=json`,
       agent: new HttpsProxyAgent(PROXY_SERVER),
     }).then((ownedGames) => {
       const ownedParseGames = JSON.parse(ownedGames) as SteamRecentlyGamesDTO;
@@ -32,7 +33,7 @@ export class PlayerService {
           httpsRequest({
             ...steamRequestSettings,
             method: "GET",
-            path: `/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${appId}&key=${STEAM_API_USER_KEY}&steamid=${steamid}`,
+            path: `/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${appId}&key=${STEAM_API_USER_KEY}&steamid=${this.steamid}`,
           }),
         ]).then(async ([globalAchievements, userStats]) => {
           return {

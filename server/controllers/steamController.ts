@@ -13,26 +13,26 @@ export class SteamController {
   }
 
   playerAchievements() {
-    const Player = new PlayerService();
+    const Player = new PlayerService(this.req.query.steamid);
 
-    return Player.achievements(this.req, this.res);
+    return Player.achievements();
   }
 
   getInventory = () => {
-    const Inventory = new InventoryService();
+    const Inventory = new InventoryService(this.req.query.steamid);
 
-    return Inventory.stats(this.req, this.res);
+    return Inventory.stats(this.req.query.appid);
   };
 
   getBadgesStats = () => {
-    const Badges = new BadgesService();
+    const Badges = new BadgesService(this.req.query.steamid);
 
-    return Badges.stats(this.req, this.res);
+    return Badges.stats();
   };
 
   getBadgesProgress = () => {
-    const Badges = new BadgesService();
+    const Badges = new BadgesService(this.req.query.steamid);
 
-    return Badges.progress(this.req, this.res);
+    return Badges.progress(this.req.query.badgeId);
   };
 }
