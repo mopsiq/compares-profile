@@ -1,2 +1,4 @@
 /keys
 proxies.txt
+app.log
+app.log.*

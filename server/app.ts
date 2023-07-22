@@ -2,15 +2,9 @@ import fastify from "fastify";
 import cors from "@fastify/cors";
 import routes from "@fastify/routes";
 import { steamRouter } from "./routers/steam/router.js";
+import { logger } from "./logger.js";
 
-const server = fastify({
-  logger: {
-    level: "info",
-    transport: {
-      target: "pino-pretty",
-    },
-  },
-})
+export const server = fastify({ logger })
   .register(cors)
   .register(routes)
   .register(steamRouter, { prefix: "api/steam" });
