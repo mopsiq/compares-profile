@@ -1,8 +1,6 @@
-import { httpsRequest } from "../../utils/httpsRequest.js";
-import { HttpsProxyAgent } from "https-proxy-agent";
 import { STEAM_API_USER_KEY } from "../../constants/STEAM_API_USER_KEY.js";
-import { PROXY_SERVER } from "../../constants/PROXY_SERVER.js";
 import { steamRequestSettings } from "../../routers/steam/request-settings.js";
+import { HttpsInstance } from "../../core/Https.js";
 
 export class UserService {
   steamid: string;
@@ -12,11 +10,10 @@ export class UserService {
   }
 
   async friends() {
-    return httpsRequest({
+    return HttpsInstance.makeRequest({
       ...steamRequestSettings,
       method: "GET",
       path: `/ISteamUser/GetFriendList/v1/?key=${STEAM_API_USER_KEY}&steamid=${this.steamid}`,
-      agent: new HttpsProxyAgent(PROXY_SERVER),
     }).then((friendsList) => {
       const friendsListParse = JSON.parse(friendsList);
 
@@ -31,11 +28,10 @@ export class UserService {
   }
 
   async groups() {
-    return httpsRequest({
+    return HttpsInstance.makeRequest({
       ...steamRequestSettings,
       method: "GET",
       path: `/ISteamUser/GetUserGroupList/v1/?key=${STEAM_API_USER_KEY}&steamid=${this.steamid}`,
-      agent: new HttpsProxyAgent(PROXY_SERVER),
     }).then((groupList) => {
       const groupListParse = JSON.parse(groupList);
 
@@ -50,11 +46,10 @@ export class UserService {
   }
 
   async bans() {
-    return httpsRequest({
+    return HttpsInstance.makeRequest({
       ...steamRequestSettings,
       method: "GET",
       path: `/ISteamUser/GetPlayerBans/v1/?key=${STEAM_API_USER_KEY}&steamids=${this.steamid}`,
-      agent: new HttpsProxyAgent(PROXY_SERVER),
     }).then((ban) => JSON.parse(ban));
   }
 }

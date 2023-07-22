@@ -1,10 +1,8 @@
 import Promise from "bluebird";
 import { SteamUserInventoryDTO } from "../../types/SteamUserInventoryDTO.js";
-import { httpsRequest } from "../../utils/httpsRequest.js";
-import { HttpsProxyAgent } from "https-proxy-agent";
-import { PROXY_SERVER } from "../../constants/PROXY_SERVER.js";
 import { steamRequestSettings } from "../../routers/steam/request-settings.js";
 import { removeCurrencyUnit } from "../../utils/removeCurrencyUnit.js";
+import { HttpsInstance } from "../../core/Https.js";
 
 export class InventoryService {
   private steamid;
@@ -14,11 +12,10 @@ export class InventoryService {
   }
 
   async stats(appid: number) {
-    return httpsRequest({
+    return HttpsInstance.makeRequest({
       ...steamRequestSettings,
       host: "steamcommunity.com",
       path: `/inventory/${this.steamid}/${appid}/2?l=english&count=5000&format=json`,
-      agent: new HttpsProxyAgent(PROXY_SERVER),
     }).then((inventory) => {
       if (!inventory) {
         return inventory;
@@ -42,28 +39,44 @@ export class InventoryService {
         inventoryParse.descriptions.filter((item) => item?.tradable === 1)
           .length || 0;
 
-      return Promise.map(marketableItems, (item) => {
-        return httpsRequest({
+      return Promise.mapSeries(marketableItems, async (item) => {
+        return HttpsInstance.makeRequest({
           ...steamRequestSettings,
           host: "steamcommunity.com",
           path: `/market/priceoverview/?appid=${appid}&currency=0&market_hash_name=${encodeURI(
             item.market_hash_name,
           )}`,
-          agent: new HttpsProxyAgent(PROXY_SERVER),
-        }).then((response) => JSON.parse(response));
+          endpointDelay: 1 * 60 * 1000,
+        }).then((response) => ({
+          price: JSON.parse(response),
+          market_name: item.market_name,
+          icon: item.icon_url,
+        }));
       })
-        .then((itemsPrice) => {
-          const prices = itemsPrice.map((i) => {
-            if (i === null || !i?.success) {
-              return 0;
-            }
+        .then((items) => {
+          const prices = items
+            .filter((i) => {
+              return (
+                (i !== undefined || i !== 0) &&
+                i.price?.success &&
+                i.price?.lowest_price
+              );
+            })
+            .map((i) => {
+              console.log("price", i.price?.lowest_price);
 
-            return parseFloat(removeCurrencyUnit("$", i?.lowest_price));
-          });
+              return {
+                ...i,
+                price: parseFloat(
+                  removeCurrencyUnit("$", i.price?.lowest_price),
+                ),
+              };
+            });
 
           return {
-            max: Math.max(...prices),
-            min: Math.min(...prices),
+            max: prices.sort((a, b) => b.price - a.price)[0],
+            min: prices.sort((a, b) => a.price - b.price)[0],
+            total: prices.reduce((acc, i) => (acc += i.price), 0),
           };
         })
         .then((prices) => ({

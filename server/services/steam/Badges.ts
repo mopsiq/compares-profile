@@ -1,11 +1,7 @@
-import { httpsRequest } from "../../utils/httpsRequest.js";
-import { HttpsProxyAgent } from "https-proxy-agent";
-import { PROXY_SERVER } from "../../constants/PROXY_SERVER.js";
 import { steamRequestSettings } from "../../routers/steam/request-settings.js";
 import { STEAM_API_USER_KEY } from "../../constants/STEAM_API_USER_KEY.js";
-
-const getQuestStatus = (quests, status: "c" | "u") =>
-  quests.filter((q) => (status === "c" ? q.completed : !q.completed));
+import { HttpsInstance } from "../../core/Https.js";
+import { getQuestStatus } from "../helpers/getQuestStatus.js";
 
 export class BadgesService {
   private steamid;
@@ -15,10 +11,9 @@ export class BadgesService {
   }
 
   async stats() {
-    return httpsRequest({
+    return HttpsInstance.makeRequest({
       ...steamRequestSettings,
       path: `/IPlayerService/GetBadges/v1/?key=${STEAM_API_USER_KEY}&steamid=${this.steamid}`,
-      agent: new HttpsProxyAgent(PROXY_SERVER),
     }).then((badgesResponse) => {
       const response = badgesResponse.response;
 
@@ -30,10 +25,9 @@ export class BadgesService {
   }
 
   async progress(badgeId: string) {
-    return httpsRequest({
+    return HttpsInstance.makeRequest({
       ...steamRequestSettings,
       path: `/IPlayerService/GetCommunityBadgeProgress/v1/?key=${STEAM_API_USER_KEY}&steamid=${this.steamid}&badgeid=${badgeId}`,
-      agent: new HttpsProxyAgent(PROXY_SERVER),
     }).then((badgesProgressResponse) => {
       const response = badgesProgressResponse.response;
 
